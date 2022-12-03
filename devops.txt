@@ -1,0 +1,350 @@
+start
+
+open console
+
+ssh activate
+
+gcloud auth list //authorization
+
+gcloud config list project  //project list
+
+gcloud config set compute/zone us-east1-b //settong the zone
+
+git clone https://source.developers.google.com/p/$DEVSHELL_PROJECT_ID/r/sample-app  //retriving objects,deltas
+
+gcloud container clusters get-credentials jenkins-cd  //fetching cluster data 
+
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+
+//active connfiguration cluster binding created
+
+helm repo add stable https://charts.helm.sh/stable  //using helm package  stable has been aded to repository
+
+helm repo update //to update the chart repository  stable to happy helming
+
+
+helm install cd stable/jenkins //chart  is deprecated 
+
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/component=jenkins-master" -l "app.kubernetes.io/instance=cd" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &
+printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+
+fdftredhihi // metadatapassword
+
+ ############ COPY PASSWORD FOR JENKINS NOW ##########################
+ 
+
+
+preview on port8080
+
+thrn admin
+password
+
+ cd sample-app //change to  diectory
+
+
+
+kubectl create ns production
+kubectl apply -f k8s/production -n production
+kubectl apply -f k8s/canary -n production
+kubectl apply -f k8s/services -n production //namespce production created,depolyment apps. bachend,frintend,canary procution created
+
+
+
+kubectl get svc //to get service 
+
+
+kubectl get service gceme-frontend -n production // name type external ip of front end
+
+and view 8080 port:
+go to jenkins admin
+credentials,stores from parent-> global,adding some credentials->google service from metada,ok,project name ,ok
+global credentilas,dashboard,new item,name item= sample-app,select multibranch pipeline
+ok
+branch sources ,add branch source,git copy the git repository url tip 3: paste and add your project id
+go  down scan multibranch piplene programs tic periodically if not otherwise run
+
+interval 1 minute, mode by jenkins
+
+credentials;project id, save,apply,save
+
+sample-app
+
+come to terminal
+
+git init
+reinitialize the existing git repository
+
+git remote add origin https://source.developers.google.com/p/$DEVSHELL_PROJECT_ID/r/sample-app //origin exists
+
+git config --global user.email "<user email>"//use name paste to email
+git config --global user.name "<user name>"//name right top cornar account li name irtu
+
+
+git add .
+git commit -m "initial commit"
+git push origin master   // on brach master branch is up to date with 'original/master'.
+
+go to 8080
+ 
+sampler app,status,loding branches //task 1
+
+
+Task 2 ::==>
+
+git checkout -b new-feature //paste switch to new feature
+
+Now watch the video
+
+open editor
+
+left side  -sample app , select main.go
+
+go to line 46 const string=="2.0.0" make 2
+
+file save all
+html go
+go to 37 <div class="card yellow>//blue to yellow,line 81 save all
+
+open editor
+
+
+ssh -
+git checkout -b new-feature//exists
+
+
+git add Jenkinsfile html.go main.go
+git commit -m "Version 2.0.0"
+git push origin new-feature // 2 files changed,3 insertions(+), 3 deletionsd(-) ,resolving deltas to new feature
+
+
+goto 8080
+
+click status adds new feture
+
+
+//task 3
+
+
+curl http://localhost:8001/api/v1/namespaces/new-feature/services/gceme-frontend:80/proxy/version
+kubectl get service gceme-frontend -n production  
+git checkout -b canary
+git push origin canary
+export FRONTEND_SERVICE_IP=$(kubectl get -o \
+jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+git checkout master
+git push origin master  // to get external ip from front end
+
+
+//switch to branch canary //up to date
+
+port 8080  status
+
+
+
+task4:
+
+
+export FRONTEND_SERVICE_IP=$(kubectl get -o \
+jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+while true; do curl http://$FRONTEND_SERVICE_IP/version; sleep 1; done
+
+if refusec ctrl c
+
+
+goto 8080 press status
+
+then paste the above command
+
+get 1.0.0
+
+
+kubectl get service gceme-frontend -n production //to het ip
+
+
+git merge canary
+git push origin master
+export FRONTEND_SERVICE_IP=$(kubectl get -o \
+jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend) // updating 
+
+again press status
+
+if not 
+
+kubectl get service gceme-frontend -n production 
+
+
+git merge canary
+git push origin master
+export FRONTEND_SERVICE_IP=$(kubectl get -o \
+jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend) // up to date referesh jenkin page
+
+
+
+
+
+
+
+
+
+
+
+
+
+wait 5 minutes
+
+
+
+
+gsp318
+
+
+open ssh
+
+gcloud auth list
+
+gsutil cat gs://cloud-training/gsp318/marking/setup_marking_v2.sh | bash //copying
+
+gcloud source repos clone valkyrie-app
+
+cd valkyrie-app
+cat > Dockerfile <<EOF
+FROM golang:1.10
+WORKDIR /go/src/app
+COPY source .
+RUN go install -v
+ENTRYPOINT ["app","-single=true","-port=8080"]
+EOF //
+
+docker build -t <Docker Image>:<Tag Name> . //paste tagname & docker image,to download and build
+
+
+
+cd marking // 
+
+./step1_v2.sh //image exists
+
+
+
+
+task 2
+
+cd .. 
+cd valkyrie-app
+docker run -p 8080:8080 <Docker Image>:<Tag Name> &
+cd ..
+cd marking
+./step2_v2.sh //container running
+
+
+
+
+task 3
+
+cd ..
+cd valkyrie-app
+docker tag <Docker Image>:<Tag Name> gcr.io/$GOOGLE_CLOUD_PROJECT/<Docker Image>:<Tag Name>
+docker push gcr.io/$GOOGLE_CLOUD_PROJECT/<Docker Image>:<Tag Name> //pushing the doc imgage
+
+
+task 4
+
+sed -i s#IMAGE_HERE#gcr.io/$GOOGLE_CLOUD_PROJECT/<Docker Image>:<Tag Name>#g k8s/deployment.yaml
+gcloud container clusters get-credentials valkyrie-dev --zone us-east1-d //fetching cluster and auth data
+kubectl create -f k8s/deployment.yaml // dev created
+kubectl create -f k8s/service.yaml //created
+
+
+
+task 5:
+
+git merge origin/kurt-dev //cupdating 
+kubectl edit deployment valkyrie-dev //change & update repicals to replicas count down imgage version to 3
+### change replicas from 1 to <Replicas Count>
+### change <Tag Name> to <Updated Version> in two places
+docker build -t gcr.io/$GOOGLE_CLOUD_PROJECT/<Docker Image>:<Updated Version> . //paste updated version
+docker push gcr.io/$GOOGLE_CLOUD_PROJECT/<Docker Image>:<Updated Version> //pushing refers to reposityory
+
+task 6 
+docker ps //container delatils
+docker kill <take container_id from above command> //exir
+ 
+
+preview 8080 admin password 
+manage jenkins
+
+manage credentials
+
+store: jenkins
+globel credentilas 
+left add credentilas
+
+google sevise account from metadata
+project name
+ok
+click logo jenkins/dashboard
+new item
+give name 
+pipeline
+ok
+scroll down 
+pipeline
+pipeline script from SCM
+scm:git
+repositores,url project id,
+
+paste : gcloud source repos list toget url
+paste to repo url
+credentials current
+apply save
+
+
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/component=jenkins-master" -l "app.kubernetes.io/instance=cd" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &
+printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo //
+
+
+
+sed -i "s/green/orange/g" source/html.go  //paste ssh
+
+sed -i "s/YOUR_PROJECT/$GOOGLE_CLOUD_PROJECT/g" Jenkinsfile
+git config --global user.email "you@example.com"              // Email
+git config --global user.name "student..."                       // Username
+git add .
+git commit -m "built pipeline init"
+git push//push
+
+8080 build now in valky app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
